@@ -8,5 +8,6 @@
 !/scripts/
 # Except config file
 !config.yaml
+!config.py
 # Except main Snakefile
 !Snakefile

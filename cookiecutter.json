@@ -1,6 +1,0 @@
-{
-    "project_name": "project-name",
-    "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
-    "description": "A short description of the project.",
-    "dev_env_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') + '-denv'}}"
-}

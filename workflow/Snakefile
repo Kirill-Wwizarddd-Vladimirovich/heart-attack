@@ -1,9 +1,10 @@
-configfile: "workflow/config.py"
-
 include: 'rules/exploration.smk'
+#configfile: "workflow/config.py"
+
+
 #include: 'rules/clustering.smk'
 #include: 'rules/regression.smk'
 
 rule all:
-    input: 
-        rules.all_info_extracting.input
+    input:
+        rules.all_exploration.input

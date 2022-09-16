@@ -1,4 +1,10 @@
 {
+    // testing
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
     // linting & formatting
     "python.formatting.provider": "black",
     "python.linting.enabled": true,
@@ -7,29 +13,65 @@
         "prefix": "aliases",
         "aliases": [
             {
-                "label": "wip",
-                "detail": "Work in progress."
+                "label": "🎉",
+                "key": "release",
+                "detail": "New release"
             },
             {
-                "label": "fix",
-                "detail": "Fix something wrong."
+                "label": "✨",
+                "key": "feature",
+                "detail": "New feature"
             },
             {
-                "label": "docs",
-                "detail": "Change documentation."
+                "label": "🐛",
+                "key": "bugfix",
+                "detail": "Bug fixed"
             },
             {
-                "label": "sub",
-                "detail": "Some subsidary work."
+                "label": "🚧",
+                "key": "wip",
+                "detail": "Work in progress"
             },
             {
-                "label": "ref",
-                "detail": "Refactoring."
+                "label": "📄",
+                "key": "docs",
+                "detail": "Documentation changes"
+            },
+            {
+                "label": "♻️",
+                "key": "refactoring",
+                "detail": "Code refactoring (no new features, no bugfixes)"
+            },
+            {
+                "label": "🧪",
+                "key": "test",
+                "detail": "Work at tests"
+            },
+            {
+                "label": "🎨",
+                "key": "style",
+                "detail": "Linting, formatting, etc."
+            },
+            {
+                "label": "⛓️",
+                "key": "deps",
+                "detail": "Updating dependncies"
+            },
+            {
+                "label": "⚙️",
+                "key": "script",
+                "detail": "Updateing development scripts"
             }
         ]
     },
+    // format for team development with issues and branches
     "vscodeGitCommit.template": [
-        "{prefix}[{issue}]: {message}"
+        "{prefix} [#{issue}] {message}"
     ],
-    "esbonio.sphinx.confDir": "",
+    "cSpell.words": [
+        "fundom",
+        "subskill",
+        "subskills",
+        "toolz"
+    ],
 }

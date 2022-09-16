@@ -1,62 +1,82 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
-import pathlib
-from pathlib import Path
-from .features import categorical_feat, numerical_feat
+from plotly.graph_objects import Figure
 
-sns.set(rc={"figure.figsize": (12, 9)}) # noqa: E402
+sns.set(rc={"figure.figsize": (12, 9)})  # noqa: E402
 
 
-def info(dataframe: pd.DataFrame) -> dict:
-    """Takes initial dataframe, returns multiple dataframes, that provides information about dataframe
+def hist_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
+    """Takes initial dataframe and creates histogram.
 
     Args:
-        dataframe (pd.DataFrame): initial dataframe with all data
+        dataframe (pd.DataFrame): initial dataframe.
+        feature (str): for creating histogram.
 
     Returns:
-        pd.DataFrame: new dataframes such as: df.info(), df.describe(), df.head()
+        Figure: histograms that reflect distribution of a feature for target variables.
     """
-    df_info = pd.DataFrame(
-        {
-            "name": dataframe.columns,
-            "non-nulls": len(dataframe) - dataframe.isnull().sum().values,
-            "nulls": dataframe.isnull().sum().values,
-            "type": dataframe.dtypes.values,
-        }
+    data = pd.melt(dataframe, id_vars=["output"])
+    hist = sns.histplot(
+        data[data["variable"] == feature], x="value", hue="output", kde=True
     )
-    df_describe = dataframe.describe()
-    df_head = dataframe.head()
-    # df_list = [df_info, df_describe, df_head]
-    df_dict = {"info": df_info, "describe": df_describe, "head": df_head}
-
-    return df_dict
+    hist.axes.set_title(feature, fontsize=14)
+    return hist
 
 
-def hist_plots(dataframe: pd.DataFrame, dirname: Path):
-    for feat in numerical_feat:
-        data = pd.melt(dataframe, id_vars=["output"])
-        hist = sns.histplot(
-            data[data["variable"] == feat], x="value", hue="output", kde=True
-        )
-        hist.axes.set_title(feat, fontsize=14)
-        plt.savefig(f"{dirname}/{feat}_hist.png")
+def box_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
+    """Takes initial dataframe and creates figures.
+
+    Args:
+        dataframe (pd.DataFrame): initial dataframe.
+        feature (str): for creating figure.
+
+    Returns:
+        Figure: box plots that reflect distribution of a feature for target variables.
+    """
+    data = pd.melt(dataframe, id_vars=["output"])
+    data_plot = data[data["variable"] == feature]["value"]
+    box = sns.boxplot(x=data["output"], y=data_plot)
+    box.axes.set_title(feature, fontsize=14)
+    return box
 
 
-def box_plots(dataframe: pd.DataFrame, dirname: Path):
-    for feat in categorical_feat:
-        data = pd.melt(dataframe, id_vars=["output"])
-        box = sns.boxplot(x=data["output"], y=data[data["variable"] == feat]["value"])
-        box.axes.set_title(feat, fontsize=14)
-        plt.savefig(f"{dirname}/{feat}_box.png")
+def count_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
+    """Takes initial dataframe and creates figures.
+
+    Args:
+        dataframe (pd.DataFrame): initial dataframe.
+        feature (str): for creating figure.
+
+    Returns:
+        Figure: counts plots that reflect distribution of a feature.
+    """
+    data = dataframe[feature]
+    count = sns.countplot(data)
+    count.axes.set_title(feature, fontsize=14)
+    return count
 
 
-def heat_plot(dataframe: pd.DataFrame, dirname: Path):
-    sns.heatmap(dataframe.corr(), annot=True)
-    plt.savefig(f"{dirname}/heatmap.png")
+def heat_plot(dataframe: pd.DataFrame) -> Figure:
+    """Takes initial dataframe and creates heatmap plot.
+
+    Args:
+        dataframe (pd.DataFrame): initial dataframe.
+
+    Returns:
+        Figure: heatmap plot for all features.
+    """
+    heatmap = sns.heatmap(dataframe.corr(), annot=True)
+    return heatmap
 
 
-def pair_plot(dataframe: pd.DataFrame, dirname: Path):
-    sns.pairplot(dataframe[numerical_feat])
-    plt.savefig(f"{dirname}/pairplot.png")
+def pair_plot(dataframe: pd.DataFrame, feat_list: list) -> Figure:
+    """Takes initial dataframe and creates pair plots for numerical features.
+
+    Args:
+        dataframe (pd.DataFrame): initial dataframe
+        feat_list (list): list of numerical features
+    Returns:
+        Figure: united figure with all pair plots for numerical features.
+    """
+    pairplot = sns.pairplot(dataframe[feat_list])
+    return pairplot

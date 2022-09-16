@@ -1,51 +1,62 @@
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix
-from sklearn.metrics import classification_report
-from sklearn.feature_selection import mutual_info_classif
-from sklearn.svm import SVC
-from sklearn.feature_selection import chi2
-from sklearn.feature_selection import SelectKBest, f_classif
-from pathlib import Path
-import pandas as pd
+from functools import reduce
+from typing import Tuple
+
 import numpy as np
-
-from src.data.features import categorical_feat, numerical_feat
-
-
-def feat_target(dataframe: pd.DataFrame) -> dict:
-    target = dataframe['output']
-    features = dataframe.drop(columns = ['output'], axis = 1)
-    df_dict = {'features': features, 'target': target}
-    return df_dict
+import pandas as pd
+from plotly.graph_objects import Figure
+from sklearn.feature_selection import SelectKBest, chi2, f_classif
+from sklearn.feature_selection import mutual_info_classif as mic
 
 
+def _iqr_filter(df, feature):
+    iqr = df[feature].quantile(0.75) - df[feature].quantile(0.25)
+    upper_quant = iqr * 1.5 + df[feature].quantile(0.75)
+    lower_quant = df[feature].quantile(0.25) - iqr * 1.5
+    mask = (df[feature] < upper_quant) & (df[feature] > lower_quant)
+    return mask
 
-def mutual(dataframe: pd.DataFrame) -> pd.DataFrame:
-    target = dataframe['output']
-    features = dataframe.drop(columns = ['output'], axis = 1)
-    importances = mutual_info_classif(features[categorical_feat], target)
-    feat_importances = pd.Series(importances, features[categorical_feat].columns[0:len(dataframe.columns)-1])
-    new = feat_importances.sort_values(ascending=False)
-    mutual_feat = new.index[:-2]
-    mutual_features = features[mutual_feat + numerical_feat]
-    return mutual_features
 
-def chi2(dataframe: pd.DataFrame):
-    target = dataframe['output']
-    features = dataframe.drop(columns = ['output'], axis = 1)
-    chi2_test = SelectKBest(score_func=chi2, k=6)
-    chi2_test.fit(features[categorical_feat], target)
-    #?????chi2_scores = pd.DataFrame(list(zip(categorical_feat, chi2_test.scores_, chi2_test.pvalues_)), columns=['ftr', 'score', 'pval'])
-    chi2_scores_best = np.asarray(categorical_feat)[chi2_test.get_support()]
-    chi2_features = features[chi2_scores_best + numerical_feat]
-    return chi2_features
+def _conjunction(arr: list[pd.Series]) -> pd.Series:
+    return reduce(lambda x, y: x & y, arr)
 
-def anova(dataframe: pd.DataFrame):
-    target = dataframe['output']
-    features = dataframe.drop(columns = ['output'], axis = 1)
-    anova_filter = SelectKBest(f_classif, k=4)
-    anova_filter.fit(features[numerical_feat], target)
-    anova_scores_best = np.asarray(numerical_feat)[anova_filter.get_support()]
-    #?????anova_results = pd.DataFrame(list(zip(numerical_feat, anova_filter.scores_, anova_filter.pvalues_)), columns=['ftr', 'score', 'pval'])
-    anova_features = [anova_scores_best + categorical_feat]
-    return anova_features
+
+def anomaly_values(dataframe: pd.DataFrame, feature_list: list) -> pd.DataFrame:
+    """Takes initial dataframe and drops anomalies by IQR.
+
+    Args:
+        dataframe (pd.DataFrame): initial dataframe.
+        feature_list (str): list of features for anomaly detection.
+
+    Returns:
+        pd.DataFrame: prepared dataframe without anomaly values in numerical features.
+    """
+    all_mask = [_iqr_filter(dataframe, feature) for feature in feature_list]
+    total_mask = _conjunction(all_mask)
+    return dataframe[total_mask]
+
+
+# можно ли сюда подавать Dynaconf
+def mutual_information(
+    dataframe_prep: pd.DataFrame,
+    target_df: pd.DataFrame,
+    mutual_list: list,
+    random: int,
+) -> Tuple[Figure, list]:
+    """Takes feature and target dataframes and conducts a mutual information test.
+
+    Args:
+        dataframe_prep (pd.DataFrame): prepared dataframe without anomalies.
+        target_df (pd.DataFrame): dataframe with target feature.
+        mutual_list (str): list of features for mutual information test.
+        random (int): random_state value.
+
+    Returns:
+        pd.DataFrame: prepared dataframe without anomaly values in numerical features.
+    """
+    importance_score = mic(dataframe_prep[mutual_list], target_df, random_state=random)
+    features_importance = pd.Series(importance_score, mutual_list).sort_values(
+        ascending=False
+    )
+    mutual_features = features_importance.index[:-2]
+    plot = features_importance.plot(kind="barh", color="royalblue")
+    return plot, mutual_features

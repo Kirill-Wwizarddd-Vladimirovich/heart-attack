@@ -33,7 +33,7 @@ Getting Started:
 
     poetry update
 
-- `poetry update` can be also used for 
+- `poetry update` can be also used for
 
 - Install src package in development mode (to solve the import problem, then
   you can use `import src` inside jupyter notebook):
@@ -100,7 +100,7 @@ Project Organization
    │   │
    │   ├── main.py         <- Entrypoint with function factory for `FastAPI`.
    │   │
-   │   ├── api             <- `FastAPI` endpoints, ETL scripts and API 
+   │   ├── api             <- `FastAPI` endpoints, ETL scripts and API
    │   │                      contracts.
    │   │
    │   └── model           <- Types for model and `prediction` function.

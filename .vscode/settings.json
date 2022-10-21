@@ -1,0 +1,77 @@
+{
+    // testing
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    // linting & formatting
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "vscodeGitCommit.variables": {
+        "prefix": "aliases",
+        "aliases": [
+            {
+                "label": "🎉",
+                "key": "release",
+                "detail": "New release"
+            },
+            {
+                "label": "✨",
+                "key": "feature",
+                "detail": "New feature"
+            },
+            {
+                "label": "🐛",
+                "key": "bugfix",
+                "detail": "Bug fixed"
+            },
+            {
+                "label": "🚧",
+                "key": "wip",
+                "detail": "Work in progress"
+            },
+            {
+                "label": "📄",
+                "key": "docs",
+                "detail": "Documentation changes"
+            },
+            {
+                "label": "♻️",
+                "key": "refactoring",
+                "detail": "Code refactoring (no new features, no bugfixes)"
+            },
+            {
+                "label": "🧪",
+                "key": "test",
+                "detail": "Work at tests"
+            },
+            {
+                "label": "🎨",
+                "key": "style",
+                "detail": "Linting, formatting, etc."
+            },
+            {
+                "label": "⛓️",
+                "key": "deps",
+                "detail": "Updating dependncies"
+            },
+            {
+                "label": "⚙️",
+                "key": "script",
+                "detail": "Updateing development scripts"
+            }
+        ]
+    },
+    // format for team development with issues and branches
+    "vscodeGitCommit.template": [
+        "{prefix} [#{issue}] {message}"
+    ],
+    "cSpell.words": [
+        "fundom",
+        "subskill",
+        "subskills",
+        "toolz"
+    ],
+}

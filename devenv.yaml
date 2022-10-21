@@ -1,0 +1,8 @@
+name: heart-attack-denv
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - conda-build
+  - python=3.9
+  - snakemake-minimal

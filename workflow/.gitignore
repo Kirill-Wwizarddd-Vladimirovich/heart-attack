@@ -1,0 +1,13 @@
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
+# Except this dirs
+!/envs/
+!/rules/
+!/scripts/
+# Except config file
+!config.yaml
+!config.py
+# Except main Snakefile
+!Snakefile

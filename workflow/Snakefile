@@ -1,0 +1,8 @@
+include: 'rules/exploration.smk'
+include: 'rules/tests.smk'
+
+
+rule all:
+    input:
+        rules.all_exploration.input,
+        rules.all_tests.input,

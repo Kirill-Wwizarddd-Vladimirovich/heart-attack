@@ -3,44 +3,42 @@ import seaborn as sns
 from plotly.graph_objects import Figure
 
 sns.set(rc={"figure.figsize": (12, 9)})  # noqa: E402
+sns.set_style("darkgrid")
 
 
-def hist_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
+def draw_hist_plots(dataframe: pd.DataFrame, feature: str, target: str) -> Figure:
     """Takes initial dataframe and creates histogram.
 
     Args:
         dataframe (pd.DataFrame): initial dataframe.
         feature (str): for creating histogram.
+        target (str): to display distribution for target feature.
 
     Returns:
         Figure: histograms that reflect distribution of a feature for target variables.
     """
-    data = pd.melt(dataframe, id_vars=["output"])
-    hist = sns.histplot(
-        data[data["variable"] == feature], x="value", hue="output", kde=True
-    )
+    hist = sns.histplot(dataframe, x=dataframe[feature], hue=target, kde=True)
     hist.axes.set_title(feature, fontsize=14)
     return hist
 
 
-def box_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
+def draw_box_plots(dataframe: pd.DataFrame, feature: str, target: str) -> Figure:
     """Takes initial dataframe and creates figures.
 
     Args:
         dataframe (pd.DataFrame): initial dataframe.
         feature (str): for creating figure.
+        target (str): to display distribution for target feature.
 
     Returns:
         Figure: box plots that reflect distribution of a feature for target variables.
     """
-    data = pd.melt(dataframe, id_vars=["output"])
-    data_plot = data[data["variable"] == feature]["value"]
-    box = sns.boxplot(x=data["output"], y=data_plot)
+    box = sns.boxplot(x=dataframe[target], y=dataframe[feature])
     box.axes.set_title(feature, fontsize=14)
     return box
 
 
-def count_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
+def draw_count_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
     """Takes initial dataframe and creates figures.
 
     Args:
@@ -56,7 +54,7 @@ def count_plots(dataframe: pd.DataFrame, feature: str) -> Figure:
     return count
 
 
-def heat_plot(dataframe: pd.DataFrame) -> Figure:
+def draw_heat_plot(dataframe: pd.DataFrame) -> Figure:
     """Takes initial dataframe and creates heatmap plot.
 
     Args:
@@ -69,7 +67,7 @@ def heat_plot(dataframe: pd.DataFrame) -> Figure:
     return heatmap
 
 
-def pair_plot(dataframe: pd.DataFrame, feat_list: list) -> Figure:
+def draw_pair_plot(dataframe: pd.DataFrame, feat_list: list) -> Figure:
     """Takes initial dataframe and creates pair plots for numerical features.
 
     Args:

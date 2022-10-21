@@ -64,16 +64,6 @@ rule pairplot_creating:
     shell:
         "python {params.cli} pair-plots {input} {output}"
 
-rule anomaly_df:
-    input:
-        raw_path/"heart.csv"
-    output:
-        interim_path/"features.csv",
-        external_path/"target.csv"
-    params:
-        cli=cli_path
-    shell:
-        "python {params.cli} features-target {input} {output}"
 
 rule all_exploration:
     input:
@@ -83,4 +73,3 @@ rule all_exploration:
         expand(rules.count_creating.output, categorical_feature = settings.categorical_feat),
         rules.heatmap_creating.output,
         rules.pairplot_creating.output,
-        rules.anomaly_df.output,
